@@ -152,8 +152,6 @@ use core::ops::{Sub, SubAssign};
 #[allow(unused_imports)]
 use prelude::*;
 
-use rand_core::{CryptoRng, RngCore};
-
 use digest::generic_array::typenum::U64;
 use digest::Digest;
 
@@ -541,36 +539,6 @@ impl Zeroize for Scalar {
 }
 
 impl Scalar {
-    /// Return a `Scalar` chosen uniformly at random using a user-provided RNG.
-    ///
-    /// # Inputs
-    ///
-    /// * `rng`: any RNG which implements the `RngCore + CryptoRng` interface.
-    ///
-    /// # Returns
-    ///
-    /// A random scalar within ℤ/lℤ.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// extern crate rand_core;
-    /// # extern crate curve25519_dalek;
-    /// #
-    /// # fn main() {
-    /// use curve25519_dalek::scalar::Scalar;
-    ///
-    /// use rand_core::OsRng;
-    ///
-    /// let mut csprng = OsRng;
-    /// let a: Scalar = Scalar::random(&mut csprng);
-    /// # }
-    pub fn random<R: RngCore + CryptoRng>(rng: &mut R) -> Self {
-        let mut scalar_bytes = [0u8; 64];
-        rng.fill_bytes(&mut scalar_bytes);
-        Scalar::from_bytes_mod_order_wide(&scalar_bytes)
-    }
-
     /// Hash a slice of bytes into a scalar.
     ///
     /// Takes a type parameter `D`, which is any `Digest` producing 64

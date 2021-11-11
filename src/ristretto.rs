@@ -165,8 +165,6 @@ use core::ops::{Add, Neg, Sub};
 use core::ops::{AddAssign, SubAssign};
 use core::ops::{Mul, MulAssign};
 
-use rand_core::{CryptoRng, RngCore};
-
 use digest::generic_array::typenum::U64;
 use digest::Digest;
 
@@ -633,29 +631,6 @@ impl RistrettoPoint {
             Y: &FieldElement::one() - &s_sq,
             T: &FieldElement::one() + &s_sq,
         }.to_extended())
-    }
-
-    /// Return a `RistrettoPoint` chosen uniformly at random using a user-provided RNG.
-    ///
-    /// # Inputs
-    ///
-    /// * `rng`: any RNG which implements the `RngCore + CryptoRng` interface.
-    ///
-    /// # Returns
-    ///
-    /// A random element of the Ristretto group.
-    ///
-    /// # Implementation
-    ///
-    /// Uses the Ristretto-flavoured Elligator 2 map, so that the
-    /// discrete log of the output point with respect to any other
-    /// point should be unknown.  The map is applied twice and the
-    /// results are added, to ensure a uniform distribution.
-    pub fn random<R: RngCore + CryptoRng>(rng: &mut R) -> Self {
-        let mut uniform_bytes = [0u8; 64];
-        rng.fill_bytes(&mut uniform_bytes);
-
-        RistrettoPoint::from_uniform_bytes(&uniform_bytes)
     }
 
     /// Hash a slice of bytes into a `RistrettoPoint`.
